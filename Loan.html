@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loan Application</title>
+    <style>
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Loan Application</h1>
+    <form id="loanForm">
+      <label for="fullName">Full Name:</label>
+      <input type="text" id="fullName" name="fullName" required />
+      <span id="fullNameError" class="error"></span>
+      <br /><br />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
+      <span id="emailError" class="error"></span>
+      <br /><br />
+
+      <label for="pan">PAN:</label>
+      <input type="text" id="pan" name="pan" required />
+      <span id="panError" class="error"></span>
+      <br /><br />
+
+      <label for="loanAmount">Loan Amount:</label>
+      <input
+        type="number"
+        id="loanAmount"
+        name="loanAmount"
+        min="1"
+        max="999999999"
+        required
+      />
+      <span id="loanAmountError" class="error"></span>
+      <span id="loanAmountInWords"></span>
+      <br /><br />
+
+      <input type="submit" value="Submit" />
+    </form>
+
+    <script>
+      document.getElementById("loanForm").onsubmit = function (event) {
+        event.preventDefault(); 
+
+        var fullName = document.getElementById("fullName").value.trim();
+
+        var fullNameError = document.getElementById("fullNameError");
+        var email1 = document.getElementById("email").value.trim();
+        var xyz = fullName.split(" ");
+        var firstName = xyz[0];
+
+        window.location.href =
+          "Conformation.html?fname=" +
+          encodeURIComponent(firstName) +
+          "&email=" +
+          encodeURIComponent(email1);
+
+        console.log(firstName);
+        if (!/^[a-zA-Z ]{4,}(?: [a-zA-Z]{4,})+$/.test(fullName)) {
+          fullNameError.textContent =
+            "Full Name must contain at least two words with minimum four characters each.";
+          return false;
+        }
+        fullNameError.textContent = "";
+
+        var email = document.getElementById("email").value.trim();
+        var emailError = document.getElementById("emailError");
+        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/.test(email)) {
+          emailError.textContent = "Invalid email address.";
+          return false;
+        }
+        emailError.textContent = "";
+
+        var pan = document.getElementById("pan").value.trim();
+        var panError = document.getElementById("panError");
+        if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) {
+          panError.textContent = "PAN must be in format ABCDE1234F.";
+          return false;
+        }
+        panError.textContent = "";
+
+        var loanAmount = parseFloat(
+          document.getElementById("loanAmount").value.trim()
+        );
+        var loanAmountError = document.getElementById("loanAmountError");
+        if (isNaN(loanAmount) || loanAmount <= 0 || loanAmount > 999999999) {
+          loanAmountError.textContent =
+            "Loan Amount must be a numeric value between 1 and 999,999,999.";
+          return false;
+        }
+        loanAmountError.textContent = "";
+
+        var loanAmountInWords = document.getElementById("loanAmountInWords");
+        loanAmountInWords.textContent = convertAmountToWords(loanAmount);
+
+        window.location.href = "conformation.html";
+        var fullName = document.getElementById("fullNameInput").value;
+      };
+
+      function convertAmountToWords(amount) {
+        var words = [
+          "",
+          "One",
+          "Two",
+          "Three",
+          "Four",
+          "Five",
+          "Six",
+          "Seven",
+          "Eight",
+          "Nine",
+        ];
+        var tensWords = [
+          "",
+          "Ten",
+          "Twenty",
+          "Thirty",
+          "Forty",
+          "Fifty",
+          "Sixty",
+          "Seventy",
+          "Eighty",
+          "Ninety",
+        ];
+        var teenWords = [
+          "",
+          "Eleven",
+          "Twelve",
+          "Thirteen",
+          "Fourteen",
+          "Fifteen",
+          "Sixteen",
+          "Seventeen",
+          "Eighteen",
+          "Nineteen",
+        ];
+
+        function convertThreeDigits(num) {
+          var result = "";
+          var hundreds = Math.floor(num / 100);
+          if (hundreds > 0) {
+            result += words[hundreds] + " Hundred ";
+          }
+          var tens = num % 100;
+          if (tens >= 20) {
+            var tensDigit = Math.floor(tens / 10);
+            result += tensWords[tensDigit] + " ";
+            result += words[tens % 10] + " ";
+          } else if (tens >= 10) {
+            result += teenWords[tens - 10] + " ";
+          } else if (tens > 0) {
+            result += words[tens] + " ";
+          }
+          return result;
+        }
+
+        var result = "";
+        var crore = Math.floor(amount / 10000000);
+        if (crore > 0) {
+          result += convertThreeDigits(crore) + "Crore ";
+        }
+        var lakh = Math.floor((amount % 10000000) / 100000);
+        if (lakh > 0) {
+          result += convertThreeDigits(lakh) + "Lakh ";
+        }
+        var thousand = Math.floor((amount % 100000) / 1000);
+        if (thousand > 0) {
+          result += convertThreeDigits(thousand) + "Thousand ";
+        }
+        var hundreds = Math.floor(amount % 1000);
+        if (hundreds > 0) {
+          result += convertThreeDigits(hundreds) + "Rs.";
+        }
+        return result;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmation Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .container {
+        max-width: 400px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>OTP Verification</h2>
+      <div id="message"></div>
+      <div id="otpForm"></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var firstName = urlParams.get("fname");
+        var email = urlParams.get("email");
+
+        var randomNum = Math.floor(1000 + Math.random() * 9000);
+        console.log("Random Number:", randomNum);
+
+        var message =
+          "Dear " +
+          firstName +
+          ",<br>Thank you for your inquiry. A 4 digit verification number has been sent to your email: " +
+          email +
+          ", please enter it in the following box and submit for confirmation:";
+
+        message +=
+          '<input type="text" id="otpInput" placeholder="Enter OTP"><button id="validateBtn">Validate</button>';
+        document.getElementById("message").innerHTML = message;
+
+        var attempts = 0;
+
+        document
+          .getElementById("validateBtn")
+          .addEventListener("click", function () {
+            var enteredOTP = document.getElementById("otpInput").value;
+            if (enteredOTP === randomNum.toString()) {
+              document.getElementById("otpForm").innerHTML =
+                '<p style="color: green;">Validation Successful!</p>';
+              window.location.href = "https://pixel6.co/";
+            } else {
+              attempts++;
+              if (attempts >= 3) {
+                document.getElementById("otpForm").innerHTML =
+                  '<p style="color: red;">Validation Failed!</p>';
+                window.location.href = "404.html";
+              } else {
+                document.getElementById("otpInput").value = "";
+                alert("Incorrect OTP. Please try again.");
+              }
+            }
+          });
+      });
+    </script>
+  </body>
+</html>
